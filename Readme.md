@@ -1,2 +1,1 @@
-# Project Akhir Algoritma dan Pemerograman
-# Semester 1
+# AJARIN DONG PUH-SEPUH
