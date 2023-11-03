@@ -3,6 +3,16 @@ import os
 def clear_console():
     os.system('cls')
 
+def Register():
+    regist =[input('Masukkan Username :'),
+            input('Masukkan Password :')]
+    with open('login.csv','w') as register:
+        user_data = f"{regist[0]},{regist[1]}"
+        register.write(user_data)
+    register.close()
+    print('Username dan Password tersimpan')
+    input('enter untuk melanjutkan')
+
 def login_user(username,password):
     with open('login.csv','r') as file:
         data = file.read()
@@ -40,20 +50,28 @@ def ganti_userpass():
                     exit
 
 while True:
-    clear_console()
-    with open('Tampilan Login.txt','r') as gui:
-        first_gui = gui.read()
-        
-        print(first_gui)
-
-    pilihan_awal = int(input('Ketikkan Pilihan Anda\t:'))
-    match pilihan_awal:
-        case 1 :
-            username_login = [input('Masukkan Username\t:'),
-                              input('Password \t\t:')]
-            login_user(username_login[0],username_login[1])
-        case 2 :
-            ganti_userpass()
-        case 3 :
+    with open('login.csv','r') as lihat:
+        a = len(lihat.readlines())
+        if a == 0:
+            with open('Tampilan Register.txt','r') as registers:
+                register_gui = registers.read()
+                print(register_gui)
+            Register()
+        else:
             clear_console()
-            break
+            with open('Tampilan Login.txt','r') as gui:
+                first_gui = gui.read()
+                
+                print(first_gui)
+
+            pilihan_awal = int(input('Ketikkan Pilihan Anda\t:'))
+            match pilihan_awal:
+                case 1 :
+                    username_login = [input('Masukkan Username\t:'),
+                                    input('Password \t\t:')]
+                    login_user(username_login[0],username_login[1])
+                case 2 :
+                    ganti_userpass()
+                case 3 :
+                    clear_console()
+                    break

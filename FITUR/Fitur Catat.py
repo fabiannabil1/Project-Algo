@@ -4,7 +4,14 @@ import pandas as pd
 def clear_console():
     os.system('cls')
 
+def kategori():
+    print('Kategori Penggunaan Keuangan')
+    print('1. FnB')
+    print('2. Clothing')
+    print('3. Tech')
+
 def Catat_Debit():
+    kategori()
     Debit = [input('Masukkan Nama Transaksi :'),
              input('Masukkan Tipe Transaksi :'),
              input('Masukkan Nominal Transaksi :')]  
@@ -14,6 +21,7 @@ def Catat_Debit():
     debit.close()
 
 def Catat_Kredit():
+    kategori()
     Kredit = [input('Masukkan Nama Transaksi :'),
              input('Masukkan Tipe Transaksi :'),
              input('Masukkan Nominal Transaksi :')]
@@ -23,6 +31,7 @@ def Catat_Kredit():
     kredit.close()
 
 def Catat_Utang():
+    kategori()
     Utang = [input('Masukkan Nama Transaksi :'),
              input('Masukkan Tipe Transaksi :'),
              input('Masukkan Nominal Transaksi :')]
