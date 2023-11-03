@@ -33,7 +33,7 @@ def Catat_Utang():
 
 while True:
     clear_console()
-    with open('Tampilan Catat.txt','r') as pilihan_catat:
+    with open('GUI Catat.txt','r') as pilihan_catat:
         pilih_fitur = pilihan_catat.read()
         print(pilih_fitur)
     pilihan_fitur = int(input('Masukkan Pilihan Anda :'))
