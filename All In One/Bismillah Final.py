@@ -41,6 +41,7 @@ def Login_pengguna():
 
     def ganti_userpass():
         clear_console()
+        Header()
         check =[input('Masukkan Username Lama :'),
                 input('Masukkan Password Lama :')]
         with open('login.csv','r') as file:
@@ -52,19 +53,20 @@ def Login_pengguna():
                 with open('login.csv','w') as user_baru:
                     simpan_baru = f'{data_user[0]},{data_user[1]},{akun_baru[0]},{akun_baru[1]}'
                     user_baru.write(simpan_baru)
+                input('Username dan Password telah diubah, enter untuk melanjutkan...')
+                Login_pengguna()
             else:
                 print('Username atau Password yang anda masukkan salah')
                 print('1. Kembali ke login')
                 print('2. Ulangi mengubah akun')
-                pilihan_ubah = int(input('Ketikkan pilihan anda :'))
+                pilihan_ubah = input('Ketikkan pilihan anda :')
                 match pilihan_ubah:
-                    case 1:
-                        exit
-                    case 2:
+                    case '1':
+                        Login_pengguna()
+                    case '2':
                         ganti_userpass()
                     case _ :
-                        pass
-
+                        Login_pengguna()
     
     with open('login.csv','r') as lihat:
         a = len(lihat.readlines())
@@ -94,7 +96,7 @@ def Login_pengguna():
                     clear_console()
                     exit
                 case _ :
-                    pass
+                    Login_pengguna()
 
 def Menu_Awal():
     clear_console()
@@ -108,7 +110,7 @@ def Menu_Awal():
             case '2' :
                 Baca_Saldo()
             case '3' :
-                Menu_Hapus_Tambah_Kategori()
+                Edit_data()
                 pass
             case '4' :
                 profil_pengguna()
@@ -126,8 +128,20 @@ def profil_pengguna():
         print(f"{'=-=-=-=-=-=Profil=-=-=-=-=-=':^68}")
         print(f"{Nama:^68}")
         print(f"{Pekerjaan:^68}")
-    input('Enter untuk kembali ke menu')
-    Menu_Awal()
+    pilihan_edit_profil = input('update profil? (y/t)\t:')
+    if pilihan_edit_profil == 'y':
+        Nama_baru = input('Masukkan Nama\t\t:')
+        Pekerjaan_baru = input('Masukkan Pekerjaan\t:')
+        with open('login.csv','r') as baca_profil:
+            baca_profil = baca_profil.read()
+            baca_profil = baca_profil.split(',')
+            baca_profil = f"{Nama_baru},{Pekerjaan_baru},{profil[2]},{profil[3]}"
+            with open('login.csv','w') as profil_baru:
+                profil_baru.write(baca_profil)
+                input('Profil Terupdate, enter untuk melanjutkan...')
+        profil_pengguna()
+    else:
+        Menu_Awal()
 
 def Fitur_Pencatatan():
     clear_console()
@@ -316,6 +330,111 @@ def Baca_Saldo():
     print('Saldo Jika Utang Terbayar\t: Rp.',total_debit-(total_utang+total_kredit))
     input('Enter untuk kembali ke menu')
     Menu_Awal()
+
+def Edit_data():
+    def edit_debit():
+        clear_console()
+        Header()
+        data_debit = pd.read_csv('Data Debit.csv')
+        print(f"{'-=-=-=-=-=Data Debit Anda=-=-=-=-=-':^68}")
+        print(data_debit)
+        print('Pilih pengeditan yang akan dilakukan :')
+        print(f"{'1. Hapus Baris'}\n{'2. Kembali'}")
+        pilihan_edit = input('Masukkan Pilihan (Nomor) : ')
+        if pilihan_edit == '1' or pilihan_edit == '2':
+            if pilihan_edit == '1':
+                print('Mode Hapus Baris')
+                pilihan_baris = int(input('Nomor baris yang akan dihapus : '))
+                if pilihan_baris > (len(data_debit.index)-1):
+                    print('Pilihan melebihi banyak baris....')
+                    input('Enter untuk mengulang..')
+                    edit_debit()
+                else:
+                    data_debit = data_debit.drop(pilihan_baris)
+                    data_debit.index = range(0,len(data_debit))
+                    data_debit.to_csv('Data Debit.csv',index= False)
+                    print('Data Terupdate')
+                    print(data_debit)
+                    edit_debit()
+            else:
+                Edit_data()
+        else:
+            edit_debit()
+
+    def edit_kredit():
+        clear_console()
+        Header()
+        data_kredit = pd.read_csv('Data Kredit.csv')
+        print(f"{'-=-=-=-=-=Data Kredit Anda=-=-=-=-=-':^68}")
+        print(data_kredit)
+        print('Pilih pengeditan yang akan dilakukan :')
+        print(f"{'1. Hapus Baris'}\n{'2. Kembali'}")
+        pilihan_edit = input('Masukkan Pilihan (Nomor) : ')
+        if pilihan_edit == '1' or pilihan_edit == '2':
+            if pilihan_edit == '1':
+                print('Mode Hapus Baris')
+                pilihan_baris = int(input('Nomor baris yang akan dihapus : '))
+                if pilihan_baris > (len(data_kredit.index)-1):
+                    print('Pilihan melebihi banyak baris....')
+                    input('Enter untuk mengulang..')
+                    edit_kredit()
+                else:
+                    data_kredit = data_kredit.drop(pilihan_baris)
+                    data_kredit.index = range(0,len(data_kredit))
+                    data_kredit.to_csv('Data Kredit.csv',index= False)
+                    print('Data Terupdate')
+                    print(data_kredit)
+                    edit_kredit()
+            else:
+                Edit_data()
+        else:
+            edit_kredit()
+
+    def edit_utang():
+        clear_console()
+        Header()
+        data_utang = pd.read_csv('Data Utang.csv')
+        print(f"{'-=-=-=-=-=Data Utang Anda=-=-=-=-=-':^68}")
+        print(data_utang)
+        print('Pilih pengeditan yang akan dilakukan :')
+        print(f"{'1. Hapus Baris'}\n{'2. Kembali'}")
+        pilihan_edit = input('Masukkan Pilihan (Nomor) : ')
+        if pilihan_edit == '1' or pilihan_edit == '2' :
+            if pilihan_edit == '1':
+                print('Mode Hapus Baris')
+                pilihan_baris = int(input('Nomor baris yang akan dihapus : '))
+                if pilihan_baris > (len(data_utang.index)-1):
+                    print('Pilihan melebihi banyak baris....')
+                    input('Enter untuk mengulang..')
+                    edit_utang()
+                else:
+                    data_utang = data_utang.drop(pilihan_baris)
+                    data_utang.index = range(0,len(data_utang))
+                    data_utang.to_csv('Data Utang.csv',index= False)
+                    print('Data Terupdate')
+                    print(data_utang)
+                    edit_utang()
+            else:
+                Edit_data()
+        else:
+            edit_utang()
+    
+    clear_console()
+    Header()
+    print(f"{'Pilih pengeditan yang akan dilakukan'}\n{'1. Debit'}\n{'2. Kredit'}\n{'3. Utang'}\n{'4. Kembali'}")
+    pilihan_edit_data = input('Ketikkan pilihan (Nomor) :')
+    if pilihan_edit_data == '1' or pilihan_edit_data == '2' or pilihan_edit_data == '3' or pilihan_edit_data ==  '4':
+        if pilihan_edit_data == '1':
+            edit_debit()
+        elif pilihan_edit_data == '2':
+            edit_kredit()
+        elif pilihan_edit_data == '3':
+            edit_utang()
+        else:
+            Menu_Awal()
+    else:
+        Edit_data()
+
 Login_pengguna()
 # profil_pengguna()
 # Fitur_Pencatatan()
