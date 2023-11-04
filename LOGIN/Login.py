@@ -8,7 +8,7 @@ def Register():
              input('Masukkan Pekerjaan Anda\t:'),
              input('Masukkan Username\t:'),
              input('Masukkan Password\t:')]
-    with open('login.csv','w') as register:
+    with open('login.csv','w', encoding='utf-8') as register:
         user_data = f"{regist[0]},{regist[1]},{regist[2]},{regist[3]}"
         register.write(user_data)
     register.close()
@@ -20,10 +20,10 @@ def Register():
         Register()
 
 def login_user(username,password):
-    with open('login.csv','r') as file:
+    with open('login.csv','r', encoding='utf-8') as file:
         data = file.read()
         data = data.split(',')
-        if username == data[2] and password == data[3]:
+        if username == data[0] and password == data[1]:
             print('Login Berhasil')
         else:
             print('Login Gagal')
@@ -33,7 +33,7 @@ def ganti_userpass():
     clear_console()
     check =[input('Masukkan Username Lama :'),
             input('Masukkan Password Lama :')]
-    with open('login.csv','r') as file:
+    with open('login.csv','r', encoding='utf-8') as file:
         data_user = file.read()
         data_user = data_user.split(',')
         if check[0] == data_user[2] and check[1] == data_user[3]:
@@ -59,13 +59,13 @@ while True:
     with open('login.csv','r') as lihat:
         a = len(lihat.readlines())
         if a == 0:
-            with open('Tampilan Register.txt','r') as registers:
+            with open('Tampilan Register.txt','r', encoding='utf-8') as registers:
                 register_gui = registers.read()
                 print(register_gui)
             Register()
         else:
             clear_console()
-            with open('Tampilan Login.txt','r') as gui:
+            with open('Tampilan Login.txt','r', encoding='utf-8') as gui:
                 first_gui = gui.read()
                 print(first_gui)
             with open('login.csv','r') as welcomings:
