@@ -11,18 +11,24 @@ def Header():
 
 def Login_pengguna():
     def Register():
+        clear_console()
+        Header()
+        with open('Tampilan Register.txt','r') as registers:
+                register_gui = registers.read()
+                print(register_gui)
+                registers.close()
         regist =[input('Masukan Nama Anda\t:'),
                 input('Masukkan Pekerjaan Anda\t:'),
-                input('Masukkan Username\t:'),
-                input('Masukkan Password\t:')]
-        with open('login.csv','w') as register:
-            user_data = f"{regist[0]},{regist[1]},{regist[2]},{regist[3]}"
-            register.write(user_data)
-        register.close()
+                input('Buat Username\t\t:'),
+                input('Buat Password\t\t:')]
         yakin_tidak = input('Apakah anda yakin? (y/t):')
         if yakin_tidak == 'y':
+            with open('login.csv','w') as register:
+                user_data = f"{regist[0]},{regist[1]},{regist[2]},{regist[3]}"
+                register.write(user_data)
             print('Username dan Password tersimpan')
             input('enter untuk melanjutkan')
+            Login_pengguna()
         else:
             Register()
 
@@ -69,11 +75,8 @@ def Login_pengguna():
                         Login_pengguna()
     
     with open('login.csv','r') as lihat:
-        a = len(lihat.readlines())
-        if a == 0:
-            with open('Tampilan Register.txt','r') as registers:
-                register_gui = registers.read()
-                print(register_gui)
+        keadaan_dbs_login = len(lihat.readlines())
+        if keadaan_dbs_login == 0:
             Register()
         else:
             clear_console()
