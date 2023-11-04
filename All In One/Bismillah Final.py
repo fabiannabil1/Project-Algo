@@ -106,8 +106,7 @@ def Menu_Awal():
             case '1' :
                 Fitur_Pencatatan()
             case '2' :
-                #Laporan Transaksi -- SOON ---
-                pass
+                Baca_Saldo()
             case '3' :
                 Menu_Hapus_Tambah_Kategori()
                 pass
@@ -287,8 +286,36 @@ def Menu_Hapus_Tambah_Kategori():
     
     Menu_Kelola()
 
-
-        
+def Baca_Saldo():
+    # def Total_Debit():
+    df_Debit = pd.read_csv('Data Debit.csv')
+    panjang_index = len(df_Debit.index)
+    total_debit = df_Debit.iloc[0:panjang_index,2]
+    total_debit = total_debit.sum()
+        # print(total_debit)
+    # def Total_Kredit():
+    df_Kredit = pd.read_csv('Data Kredit.csv')
+    panjang_index = len(df_Kredit.index)
+    total_kredit = df_Kredit.iloc[0:panjang_index,2]
+    total_kredit = total_kredit.sum()
+        # print(total_kredit)
+    # def Total_Utang():
+    df_Utang = pd.read_csv('Data Utang.csv')
+    panjang_index = len(df_Utang.index)
+    total_utang = df_Utang.iloc[0:panjang_index,2]
+    total_utang = total_utang.sum()
+        # print(total_utang)
+    
+    clear_console()
+    Header()
+    print(f"{'Laporan Keuangan Anda'}")
+    print('Total Pemasukan\t\t\t: Rp.',total_debit)
+    print('Total Pengeluaran\t\t: Rp.',total_kredit)
+    print('Total Utang\t\t\t: Rp.',total_utang)
+    print('Saldo Total\t\t\t: Rp.',total_debit-total_kredit)
+    print('Saldo Jika Utang Terbayar\t: Rp.',total_debit-(total_utang+total_kredit))
+    input('Enter untuk kembali ke menu')
+    Menu_Awal()
 Login_pengguna()
 # profil_pengguna()
 # Fitur_Pencatatan()
