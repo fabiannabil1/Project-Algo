@@ -17,6 +17,7 @@ def verifikasi_password(password):
   ada_kapital = False
   ada_huruf_kecil = False
   ada_simbol = False
+  ada_angka = False
   simbol = "[_@#$%^&*()-]"
 
   for char in password:
@@ -26,9 +27,11 @@ def verifikasi_password(password):
       else:
         ada_kapital = True
     elif char in simbol:
-      ada_simbol = True
+        ada_simbol = True
+    elif char in '1234567890':
+        ada_angka = True
 
-  return ada_huruf_kecil and ada_kapital and ada_simbol
+  return ada_huruf_kecil and ada_kapital and ada_simbol and ada_angka
 
 def Login_pengguna():
     def Register():
