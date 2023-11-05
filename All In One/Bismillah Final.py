@@ -8,19 +8,49 @@ def Header():
     with open('Header.txt','r') as header:
         header = header.read()
         print(header)
+        
+def verifikasi_password(password):
+
+  if len(password) < 8:
+    return False
+  
+  ada_kapital = False
+  ada_huruf_kecil = False
+  ada_simbol = False
+  simbol = "[_@#$%^&*()-]"
+
+  for char in password:
+    if char.isalpha():
+      if char.islower():
+        ada_huruf_kecil = True
+      else:
+        ada_kapital = True
+    elif char in simbol:
+      ada_simbol = True
+
+  return ada_huruf_kecil and ada_kapital and ada_simbol
 
 def Login_pengguna():
     def Register():
+        def password():
+            pilihan_password = input('Buat Password\t\t:')
+            if verifikasi_password(pilihan_password):
+                regist[3] = pilihan_password
+            else:
+                print('Password diluar kriteria!')
+                print('Minimal 8 karakter, memiliki huruf kecil,kapital ,dan simbol')
+                password()
+
         clear_console()
-        Header()
-        with open('Tampilan Register.txt','r') as registers:
+
+        with open('Tampilan Register.txt','r',encoding='utf-8') as registers:
                 register_gui = registers.read()
                 print(register_gui)
                 registers.close()
         regist =[input('Masukan Nama Anda\t:'),
                 input('Masukkan Pekerjaan Anda\t:'),
-                input('Buat Username\t\t:'),
-                input('Buat Password\t\t:')]
+                input('Buat Username\t\t:'),'password']
+        password()
         yakin_tidak = input('Apakah anda yakin? (y/t):')
         if yakin_tidak == 'y':
             with open('login.csv','w') as register:
@@ -46,6 +76,15 @@ def Login_pengguna():
                 Login_pengguna()
 
     def ganti_userpass():
+        def password():
+            pilihan_password = input('Masukkan Password baru :')
+            if verifikasi_password(pilihan_password):
+                akun_baru[1] = pilihan_password
+            else:
+                print('Password diluar kriteria!')
+                print('Minimal 8 karakter, memiliki huruf kecil,kapital ,dan simbol')
+                password()
+
         clear_console()
         Header()
         check =[input('Masukkan Username Lama :'),
@@ -54,8 +93,8 @@ def Login_pengguna():
             data_user = file.read()
             data_user = data_user.split(',')
             if check[0] == data_user[2] and check[1] == data_user[3]:
-                akun_baru = [input('Masukkan Username baru :'),
-                            input('Masukkan Password baru :')]
+                akun_baru = [input('Masukkan Username baru :'),'password']
+                password()
                 with open('login.csv','w') as user_baru:
                     simpan_baru = f'{data_user[0]},{data_user[1]},{akun_baru[0]},{akun_baru[1]}'
                     user_baru.write(simpan_baru)
@@ -80,7 +119,7 @@ def Login_pengguna():
             Register()
         else:
             clear_console()
-            with open('Tampilan Login.txt','r') as gui:
+            with open('Tampilan Login.txt','r',encoding='utf-8') as gui:
                 first_gui = gui.read()
                 print(first_gui)
             with open('login.csv','r') as welcomings:
@@ -101,6 +140,7 @@ def Login_pengguna():
                 case _ :
                     Login_pengguna()
 
+
 def Menu_Awal():
     clear_console()
     with open('Menu Awal.txt','r') as gui_menu:
@@ -119,6 +159,8 @@ def Menu_Awal():
                 profil_pengguna()
             case '5' :
                 Login_pengguna()
+            case _ :
+                Menu_Awal()
 
 def profil_pengguna():
     clear_console()
@@ -233,7 +275,7 @@ def Fitur_Pencatatan():
         case '5' :
             Menu_Awal()
         case _ :
-            pass
+            Fitur_Pencatatan()
 
 def Menu_Hapus_Tambah_Kategori():
     def Menu_Kelola():
