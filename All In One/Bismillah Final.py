@@ -487,6 +487,9 @@ def Edit_data():
     else:
         Edit_data()
 
-Login_pengguna()
+# Login_pengguna()
 # profil_pengguna()
 # Fitur_Pencatatan()
+
+if __name__ == '__main__':
+    Login_pengguna()
