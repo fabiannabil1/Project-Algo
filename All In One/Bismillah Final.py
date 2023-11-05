@@ -299,17 +299,20 @@ def Menu_Hapus_Tambah_Kategori():
         Header()
         frame_cat = pd.read_csv('Data kategori.csv')
         print(frame_cat)
-        tambah_kategori = input('Ketikkan Kategori Baru :')
-        tambah_kategori = {'Kategori' : tambah_kategori}
-        panjang_index = len(frame_cat)
-        frame_cat.loc[panjang_index] =  tambah_kategori
-        frame_cat.to_csv('Data kategori.csv', index= False)
-        print(frame_cat)
-        pilihan_cat = input('kategori telah ditambah.. buat kategori baru lagi? y/t :')
-        if pilihan_cat == 'y':
-            Tambah_Kategori()
-        else:
+        tambah_kategori = input('Ketikkan Kategori Baru (enter untuk batal):')
+        if tambah_kategori == "" :
             Menu_Hapus_Tambah_Kategori()
+        else:
+            tambah_kategori = {'Kategori' : tambah_kategori}
+            panjang_index = len(frame_cat)
+            frame_cat.loc[panjang_index] =  tambah_kategori
+            frame_cat.to_csv('Data kategori.csv', index= False)
+            print(frame_cat)
+            pilihan_cat = input('kategori telah ditambah.. buat kategori baru lagi? y/t :')
+            if pilihan_cat == 'y':
+                Tambah_Kategori()
+            else:
+                Menu_Hapus_Tambah_Kategori()
 
     def hapus_kategori():
         clear_console()
@@ -328,6 +331,7 @@ def Menu_Hapus_Tambah_Kategori():
                 if int(hapus_cat) <= panjang_index-1:
                     frame_cat = frame_cat.drop(int(hapus_cat))
                     frame_cat.index = range(0,len(frame_cat))
+                    frame_cat.to_csv('Data kategori.csv',index= False)
                 else:
                     print('Pilihan diluar jangkauan..')
                     input('enter untuk mengulang')
