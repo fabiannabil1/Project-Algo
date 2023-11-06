@@ -143,7 +143,6 @@ def Login_pengguna():
                 case _ :
                     Login_pengguna()
 
-
 def Menu_Awal():
     clear_console()
     with open('Menu Awal.txt','r') as gui_menu:
@@ -486,10 +485,6 @@ def Edit_data():
             Menu_Awal()
     else:
         Edit_data()
-
-# Login_pengguna()
-# profil_pengguna()
-# Fitur_Pencatatan()
 
 if __name__ == '__main__':
     Login_pengguna()
