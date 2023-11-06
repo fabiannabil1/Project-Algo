@@ -1,4 +1,5 @@
 import os
+import csv
 
 def clear_console():
     os.system('cls')
@@ -9,9 +10,8 @@ def Register():
              input('Masukkan Username\t:'),
              input('Masukkan Password\t:')]
     with open('login.csv','w', encoding='utf-8') as register:
-        user_data = f"{regist[0]},{regist[1]},{regist[2]},{regist[3]}"
-        register.write(user_data)
-    register.close()
+       writer = csv.writer(register, delimiter= ',')
+       writer.writerow(regist)
     yakin_tidak = input('Apakah anda yakin? (y/t):')
     if yakin_tidak == 'y':
         print('Username dan Password tersimpan')
@@ -21,13 +21,13 @@ def Register():
 
 def login_user(username,password):
     with open('login.csv','r', encoding='utf-8') as file:
-        data = file.read()
-        data = data.split(',')
-        if username == data[0] and password == data[1]:
-            print('Login Berhasil')
-        else:
-            print('Login Gagal')
-        input('enter untuk melanjutkan..')
+        data = csv.reader(file)
+        for row in data:
+            if username == row[2] and password == row[3]:
+                print('Login Berhasil')
+            else:
+                print('Login Gagal')
+            input('enter untuk melanjutkan..')
 
 def ganti_userpass():
     clear_console()

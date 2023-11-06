@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import  csv
 
 def clear_console():
         os.system('cls')
@@ -57,8 +58,8 @@ def Login_pengguna():
         yakin_tidak = input('Apakah anda yakin? (y/t):')
         if yakin_tidak == 'y':
             with open('login.csv','w') as register:
-                user_data = f"{regist[0]},{regist[1]},{regist[2]},{regist[3]}"
-                register.write(user_data)
+                writer = csv.writer(register, delimiter= ',')
+                writer.writerow(regist)
             print('Username dan Password tersimpan')
             input('enter untuk melanjutkan')
             Login_pengguna()
@@ -67,16 +68,16 @@ def Login_pengguna():
 
     def login_user(username,password):
         with open('login.csv','r') as file:
-            data = file.read()
-            data = data.split(',')
-            if username == data[2] and password == data[3]:
-                print('Login Berhasil')
-                input('enter untuk melanjutkan..')
-                Menu_Awal()
-            else:
-                print('Login Gagal')
-                input('Enter untuk login ulang')
-                Login_pengguna()
+            verifikasi = csv.reader(file)
+            for data in verifikasi:
+                if username == data[2] and password == data[3]:
+                    print('Login Berhasil')
+                    input('enter untuk melanjutkan..')
+                    Menu_Awal()
+                else:
+                    print('Login Gagal')
+                    input('Enter untuk login ulang')
+                    Login_pengguna()
 
     def ganti_userpass():
         def password():
@@ -93,28 +94,29 @@ def Login_pengguna():
         check =[input('Masukkan Username Lama :'),
                 input('Masukkan Password Lama :')]
         with open('login.csv','r') as file:
-            data_user = file.read()
-            data_user = data_user.split(',')
-            if check[0] == data_user[2] and check[1] == data_user[3]:
-                akun_baru = [input('Masukkan Username baru :'),'password']
-                password()
-                with open('login.csv','w') as user_baru:
-                    simpan_baru = f'{data_user[0]},{data_user[1]},{akun_baru[0]},{akun_baru[1]}'
-                    user_baru.write(simpan_baru)
-                input('Username dan Password telah diubah, enter untuk melanjutkan...')
-                Login_pengguna()
-            else:
-                print('Username atau Password yang anda masukkan salah')
-                print('1. Kembali ke login')
-                print('2. Ulangi mengubah akun')
-                pilihan_ubah = input('Ketikkan pilihan anda :')
-                match pilihan_ubah:
-                    case '1':
-                        Login_pengguna()
-                    case '2':
-                        ganti_userpass()
-                    case _ :
-                        Login_pengguna()
+            reader = csv.reader(file)
+            for data_user in reader:
+                if check[0] == data_user[2] and check[1] == data_user[3]:
+                    akun_baru = [input('Masukkan Username baru :'),'password']
+                    password()
+                    ganti_akun = [data_user[0],data_user[1],akun_baru[0],akun_baru[1]]
+                    with open('login.csv','w') as user_baru:
+                        user = csv.writer(user_baru, delimiter=',')
+                        user.writerow(ganti_akun)
+                    input('Username dan Password telah diubah, enter untuk melanjutkan...')
+                    Login_pengguna()
+                else:
+                    print('Username atau Password yang anda masukkan salah')
+                    print('1. Kembali ke login')
+                    print('2. Ulangi mengubah akun')
+                    pilihan_ubah = input('Ketikkan pilihan anda :')
+                    match pilihan_ubah:
+                        case '1':
+                            Login_pengguna()
+                        case '2':
+                            ganti_userpass()
+                        case _ :
+                            Login_pengguna()
     
     with open('login.csv','r') as lihat:
         keadaan_dbs_login = len(lihat.readlines())
