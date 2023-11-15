@@ -1,1 +1,6 @@
-Nama,Kategori,Nominal
+Nama Transaksi,Kategori,Nominal
+"Makan Roti, Minum Milkshake",Sekunder,30000
+"Makan,Minum,dan foya-foya",Primer,2000000
+Gaji,Pemasukan,3000000
+Gaji Bulanan,Pemasukan,3000000
+gaji,Pemasukan,1000000

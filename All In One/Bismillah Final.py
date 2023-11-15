@@ -1,12 +1,13 @@
 import os
 import pandas as pd
-import  csv
+import csv
+import pwinput
 
 def clear_console():
         os.system('cls')
 
 def Header():
-    with open('Header.txt','r') as header:
+    with open('Header.txt','r',encoding='utf-8') as header:
         header = header.read()
         print(header)
         
@@ -19,7 +20,7 @@ def verifikasi_password(password):
   ada_huruf_kecil = False
   ada_simbol = False
   ada_angka = False
-  simbol = "[_@#$%^&*()-]"
+  simbol = "[_@#$%^&*()-?><;:'}{|\=+~`]"
 
   for char in password:
     if char.isalpha():
@@ -37,34 +38,42 @@ def verifikasi_password(password):
 def Login_pengguna():
     def Register():
         def password():
-            pilihan_password = input('Buat Password\t\t:')
+            pilihan_password = pwinput.pwinput('Buat Password\t\t:')
             if verifikasi_password(pilihan_password):
                 regist[3] = pilihan_password
             else:
                 print('Password diluar kriteria!')
-                print('Minimal 8 karakter, memiliki huruf kecil,kapital ,dan simbol')
+                print('Minimal 8 karakter, memiliki huruf kecil, kapital, angka, dan simbol')
                 password()
 
         clear_console()
-
         with open('Tampilan Register.txt','r',encoding='utf-8') as registers:
                 register_gui = registers.read()
                 print(register_gui)
-                registers.close()
-        regist =[input('Masukan Nama Anda\t:'),
-                input('Masukkan Pekerjaan Anda\t:'),
-                input('Buat Username\t\t:'),'password']
-        password()
-        yakin_tidak = input('Apakah anda yakin? (y/t):')
-        if yakin_tidak == 'y':
-            with open('login.csv','w') as register:
-                writer = csv.writer(register, delimiter= ',')
-                writer.writerow(regist)
-            print('Username dan Password tersimpan')
-            input('enter untuk melanjutkan')
-            Login_pengguna()
-        else:
+        print(f"{'=-=-=-=-=Selamat Datang=-=-=-=-=':^75}")
+        print(f"{'Ketik [t] lalu enter apabila batal':^75}")
+        regist =input('Masukan Nama Anda\t:')
+        if regist == "" :
+            print("Nama harus diisi!")
+            input("Enter untuk melanjutkan...")
             Register()
+        elif regist == 't':
+            clear_console()
+            exit
+        else:
+            regist =[regist,input('Masukkan Pekerjaan Anda\t:'),
+                    input('Buat Username\t\t:'),'password']
+            password()
+            yakin_tidak = input('Apakah anda yakin? (y/t):')
+            if yakin_tidak == 'y':
+                with open('login.csv','w') as register:
+                    writer = csv.writer(register, delimiter= ',')
+                    writer.writerow(regist)
+                print('Username dan Password tersimpan')
+                input('enter untuk melanjutkan')
+                Kategori_Default()
+            else:
+                Register()
 
     def login_user(username,password):
         with open('login.csv','r') as file:
@@ -72,7 +81,7 @@ def Login_pengguna():
             for data in verifikasi:
                 if username == data[2] and password == data[3]:
                     print('Login Berhasil')
-                    input('enter untuk melanjutkan..')
+                    input('Enter untuk melanjutkan..')
                     Menu_Awal()
                 else:
                     print('Login Gagal')
@@ -81,18 +90,19 @@ def Login_pengguna():
 
     def ganti_userpass():
         def password():
-            pilihan_password = input('Masukkan Password baru :')
+            pilihan_password = pwinput.pwinput('Masukkan Password baru :')
             if verifikasi_password(pilihan_password):
                 akun_baru[1] = pilihan_password
             else:
                 print('Password diluar kriteria!')
-                print('Minimal 8 karakter, memiliki huruf kecil,kapital ,dan simbol')
+                print('Minimal 8 karakter, memiliki huruf kecil, kapital, angka, dan simbol')
                 password()
 
         clear_console()
         Header()
+        print('')
         check =[input('Masukkan Username Lama :'),
-                input('Masukkan Password Lama :')]
+                (pwinput.pwinput('Masukkan Password Lama :'))]
         with open('login.csv','r') as file:
             reader = csv.reader(file)
             for data_user in reader:
@@ -107,7 +117,7 @@ def Login_pengguna():
                     Login_pengguna()
                 else:
                     print('Username atau Password yang anda masukkan salah')
-                    print('1. Kembali ke login')
+                    print('1. Kembali ke menu login')
                     print('2. Ulangi mengubah akun')
                     pilihan_ubah = input('Ketikkan pilihan anda :')
                     match pilihan_ubah:
@@ -131,23 +141,23 @@ def Login_pengguna():
                 welcoming = welcomings.read()
                 Profil_Pengguna = welcoming.split(',')
                 welcome = f"{'Selamat Datang'} {Profil_Pengguna[0]}"
-                print(f"{welcome:^68}")
+                print(f"{welcome:^75}")
             pilihan_awal = (input('Ketikkan Pilihan Anda\t:'))
             match pilihan_awal:
                 case '1' :
-                    username_login = [input('Masukkan Username\t:'),input('Password \t\t:')]
+                    username_login = [input('Masukkan Username\t:'),pwinput.pwinput('Password \t\t:')]
                     login_user(username_login[0],username_login[1])
                 case '2' :
                     ganti_userpass()
                 case '3' :
-                    clear_console()
                     exit
+                    clear_console()
                 case _ :
                     Login_pengguna()
-
+                    
 def Menu_Awal():
     clear_console()
-    with open('Menu Awal.txt','r') as gui_menu:
+    with open('Menu Awal.txt','r',encoding='utf-8') as gui_menu:
         gui_menu = gui_menu.read()
         print(gui_menu)
         pilihan_menu = input('Ketikkan Pilihan Anda :')
@@ -200,19 +210,15 @@ def Fitur_Pencatatan():
     def Catat_Debit():
             clear_console()
             Header()
-            print(f"{'CATAT DEBIT':^68}")
-            Debit = [
-                    input('Masukkan Nama Transaksi :'),
-                    Kategori_transaksi(),
-                    input('Masukkan Tipe Transaksi :'),
-                    input('Masukkan Nominal Transaksi :')]  
-            tambah_debit = f"{Debit[0]},{Debit[2]},{Debit[3]}\n"
-
+            print(f"{'=-=-=-=-=CATAT DEBIT=-=-=-=-=':^75}")
+            Debit = [input('Masukkan Nama Transaksi\t\t:'),
+                     'Pemasukan',
+                    input('Masukkan Nominal Transaksi\t: Rp.')]  
             with open('Data Debit.csv','a') as debit:
-                debit.write(tambah_debit)
-            debit.close()
+                data_debit = csv.writer(debit, delimiter=',')
+                data_debit.writerow(Debit)
             print('Berhasil disimpan!')
-            input('enter untuk melanjutkan...')
+            input('Enter untuk melanjutkan...')
             tambah_lagi = input('Tambah lagi? y/t:')
             if tambah_lagi == 'y':
                 Catat_Debit()
@@ -222,19 +228,16 @@ def Fitur_Pencatatan():
     def Catat_Kredit():
             clear_console()
             Header()
-            print(f"{'CATAT KREDIT':^68}")
-            Kredit = [
-                    input('Masukkan Nama Transaksi :'),
-                    Kategori_transaksi(),
-                    input('Masukkan Tipe Transaksi :'),
-                    input('Masukkan Nominal Transaksi :')]  
-            tambah_kredit = f"{Kredit[0]},{Kredit[2]},{Kredit[3]}\n"
-
+            print(f"{'=-=-=-=-=CATAT KREDIT=-=-=-=-=':^75}")
+            Kredit = input('Masukkan Nama Transaksi\t\t:')
+            Kategori_transaksi()
+            Kredit = [Kredit,input('Masukkan Tipe Transaksi\t\t:'),
+                    input('Masukkan Nominal Transaksi\t: Rp.')]  
             with open('Data Kredit.csv','a') as kredit:
-                kredit.write(tambah_kredit)
-            kredit.close()
+                data_kredit = csv.writer(kredit, delimiter=',')
+                data_kredit.writerow(Kredit)
             print('Berhasil disimpan!')
-            input('enter untuk melanjutkan...')
+            input('Enter untuk melanjutkan...')
             tambah_lagi = input('Tambah lagi? y/t:')
             if tambah_lagi == 'y':
                 Catat_Kredit()
@@ -243,19 +246,16 @@ def Fitur_Pencatatan():
     def Catat_Utang():
             clear_console()
             Header()
-            print(f"{'CATAT UTANG':^68}")
-            utang = [
-                    input('Masukkan Nama Transaksi :'),
-                    Kategori_transaksi(),
-                    input('Masukkan Tipe Transaksi :'),
-                    input('Masukkan Nominal Transaksi :')]  
-            tambah_utang = f"{utang[0]},{utang[2]},{utang[3]}\n"
-
+            print(f"{'=-=-=-=-=CATAT UTANG=-=-=-=-=':^75}")
+            Utang = input('Masukkan Nama Transaksi\t\t:')
+            Kategori_transaksi()
+            Utang = [Utang,input('Masukkan Tipe Transaksi\t\t:'),
+                    input('Masukkan Nominal Transaksi\t: Rp.')]  
             with open('Data Utang.csv','a') as utang:
-                utang.write(tambah_utang)
-            utang.close()
+                data_utang = csv.writer(utang, delimiter=',')
+                data_utang.writerow(Utang)
             print('Berhasil disimpan!')
-            input('enter untuk melanjutkan...')
+            input('Enter untuk melanjutkan...')
             tambah_lagi = input('Tambah lagi? y/t:')
             if tambah_lagi == 'y':
                 Catat_Utang()
@@ -263,7 +263,7 @@ def Fitur_Pencatatan():
                 Fitur_Pencatatan()
 
     clear_console()
-    with open('GUI Catat.txt','r') as pilihan_catat:
+    with open('GUI Catat.txt','r',encoding='utf-8') as pilihan_catat:
         pilih_fitur = pilihan_catat.read()
         print(pilih_fitur)
     pilihan_fitur = input('Masukkan Pilihan Anda :')
@@ -284,7 +284,7 @@ def Fitur_Pencatatan():
 def Menu_Hapus_Tambah_Kategori():
     def Menu_Kelola():
         clear_console()
-        with open('Hapus Kategori.txt','r') as gui_cat:
+        with open('Hapus Kategori.txt','r',encoding= 'utf-8') as gui_cat:
             gui_cat = gui_cat.read()
             print(gui_cat)
         pilhan_add_del = input('Pilihan Anda :')
@@ -312,7 +312,7 @@ def Menu_Hapus_Tambah_Kategori():
             frame_cat.loc[panjang_index] =  tambah_kategori
             frame_cat.to_csv('Data kategori.csv', index= False)
             print(frame_cat)
-            pilihan_cat = input('kategori telah ditambah.. buat kategori baru lagi? y/t :')
+            pilihan_cat = input('Kategori baru telah ditambah.. buat kategori baru lagi? y/t :')
             if pilihan_cat == 'y':
                 Tambah_Kategori()
             else:
@@ -332,26 +332,65 @@ def Menu_Hapus_Tambah_Kategori():
             case 't':
                 Menu_Hapus_Tambah_Kategori()
             case _ :
-                if int(hapus_cat) <= panjang_index-1:
-                    frame_cat = frame_cat.drop(int(hapus_cat))
-                    frame_cat.index = range(0,len(frame_cat))
-                    frame_cat.to_csv('Data kategori.csv',index= False)
-                else:
-                    print('Pilihan diluar jangkauan..')
-                    input('enter untuk mengulang')
+                if hapus_cat_str == "":
                     hapus_kategori()
-                print(frame_cat)
-                print('Hapus Lagi? y/t')
-                hapus_cat_lagi = input('Pilihan Anda :')
-                match hapus_cat_lagi:
-                    case 'y':
+                else:
+                    if int(hapus_cat) <= panjang_index-1:
+                        frame_cat = frame_cat.drop(int(hapus_cat))
+                        frame_cat.index = range(0,len(frame_cat))
+                        frame_cat.to_csv('Data kategori.csv',index= False)
+                    else:
+                        print('Pilihan diluar jangkauan..')
+                        input('enter untuk mengulang')
                         hapus_kategori()
-                    case 't':
-                        Menu_Hapus_Tambah_Kategori()
-                    case _ :
-                        Menu_Hapus_Tambah_Kategori()
+                    print(frame_cat)
+                    print('Hapus Lagi? y/t')
+                    hapus_cat_lagi = input('Pilihan Anda :')
+                    match hapus_cat_lagi:
+                        case 'y':
+                            hapus_kategori()
+                        case 't':
+                            Menu_Hapus_Tambah_Kategori()
+                        case _ :
+                            Menu_Hapus_Tambah_Kategori()
     
     Menu_Kelola()
+
+def Kategori_Default():
+    def tambah_kategori():
+        print('Masukkan Kategori Pilihan Anda')
+        kategori = [input('Masukkan Kategori yang anda mau : ')]
+        with open('Data kategori.csv','a') as file:
+            tulis_kategori = csv.writer(file)
+            tulis_kategori.writerow(kategori)
+        
+        tambah_lagi = input('Tambah lagi (y/t):')
+        if tambah_lagi == 'y':
+            tambah_kategori()
+        else:
+            input('Enter Untuk Melanjutkan..')
+            Login_pengguna()
+
+    clear_console()
+    Header()
+    print('')
+    print(f"{'Masukkan Kategori Sesuai Pilihan Anda':^75}")
+    print(f"{'Contoh : FnB, Clothing, Biaya Sekolah, dst.':^75}")
+    print(f"{'[1] kategori default':^75}")
+    print(f"{'[2] Input kategori secara manual':^75}")
+    pilihan_kategori = input('Masukkan Pilihan : ')
+    match pilihan_kategori:
+        case '1' : 
+            kategori = {'Kategori': ['Fnb','Clothing','Biaya Sekolah']}
+            kategori = pd.DataFrame(kategori)
+            kategori.to_csv('Data kategori.csv', index= False)
+            Login_pengguna()
+            # with open('Data kategori.csv','w') as file:
+            #     file.write(kategori)
+        case '2' :
+           tambah_kategori()
+        case _ :
+            Kategori_Default()
 
 def Baca_Saldo():
     # def Total_Debit():
@@ -375,12 +414,11 @@ def Baca_Saldo():
     
     clear_console()
     Header()
-    print(f"{'Laporan Keuangan Anda'}")
+    print('')
+    print(f"{'=-=-=-=-=Laporan Keuangan Anda=-=-=-=-=':^75}")
     print('Total Pemasukan\t\t\t: Rp.',total_debit)
-    print('Total Pengeluaran\t\t: Rp.',total_kredit)
-    print('Total Utang\t\t\t: Rp.',total_utang)
-    print('Saldo Total\t\t\t: Rp.',total_debit-total_kredit)
-    print('Saldo Jika Utang Terbayar\t: Rp.',total_debit-(total_utang+total_kredit))
+    print('Total Pengeluaran\t\t: Rp.',total_kredit+total_utang)
+    print('Saldo Total\t\t\t: Rp.',total_debit-(total_kredit+total_utang))
     input('Enter untuk kembali ke menu')
     Menu_Awal()
 
@@ -389,7 +427,7 @@ def Edit_data():
         clear_console()
         Header()
         data_debit = pd.read_csv('Data Debit.csv')
-        print(f"{'-=-=-=-=-=Data Debit Anda=-=-=-=-=-':^68}")
+        print(f"{'-=-=-=-=-=Data Debit Anda=-=-=-=-=-':^75}")
         print(data_debit)
         print('Pilih pengeditan yang akan dilakukan :')
         print(f"{'1. Hapus Baris'}\n{'2. Kembali'}")
@@ -418,7 +456,7 @@ def Edit_data():
         clear_console()
         Header()
         data_kredit = pd.read_csv('Data Kredit.csv')
-        print(f"{'-=-=-=-=-=Data Kredit Anda=-=-=-=-=-':^68}")
+        print(f"{'-=-=-=-=-=Data Kredit Anda=-=-=-=-=-':^75}")
         print(data_kredit)
         print('Pilih pengeditan yang akan dilakukan :')
         print(f"{'1. Hapus Baris'}\n{'2. Kembali'}")
@@ -447,7 +485,7 @@ def Edit_data():
         clear_console()
         Header()
         data_utang = pd.read_csv('Data Utang.csv')
-        print(f"{'-=-=-=-=-=Data Utang Anda=-=-=-=-=-':^68}")
+        print(f"{'-=-=-=-=-=Data Utang Anda=-=-=-=-=-':^75}")
         print(data_utang)
         print('Pilih pengeditan yang akan dilakukan :')
         print(f"{'1. Hapus Baris'}\n{'2. Kembali'}")
