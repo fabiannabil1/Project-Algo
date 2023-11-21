@@ -11,7 +11,6 @@ def Header():
         print(header)
         
 def verifikasi_password(password):
-
   if len(password) < 8:
     return False
   
@@ -31,7 +30,6 @@ def verifikasi_password(password):
         ada_simbol = True
     elif char in '1234567890':
         ada_angka = True
-
   return ada_huruf_kecil and ada_kapital and ada_simbol and ada_angka
 
 def Login_pengguna():
@@ -215,10 +213,16 @@ def Fitur_Pencatatan():
                  inputan=[inputan,kategori,input('Masukkan Nominal Transaksi\t: Rp.')]
         else:
             Kategori_transaksi()
-            inputan=[inputan,input('Masukkan Tipe Transaksi\t\t:'),
-                    input('Masukkan Nominal Transaksi\t: Rp.')]
+            panjang_data = banyaknya_csv('Data kategori.csv')
+            tipe = int(input('Masukkan Tipe Transaksi (Nomor)\t:'))
+            if 0 <= tipe  <= panjang_data:
+                df_kategori = pd.read_csv('Data kategori.csv')
+                tipe_transaksi = df_kategori.iloc[tipe,0]
+                inputan = [inputan,str(tipe_transaksi),input('Masukkan Nominal Transaksi\t: Rp.')]
+            else:
+                Catat(data,kategori)
     
-        with open('Data Debit.csv','a') as catat:
+        with open(f"Data {data}.csv",'a') as catat:
             data_data = csv.writer(catat, delimiter=',')
             data_data.writerow(inputan)
         print('Berhasil disimpan!')
@@ -476,13 +480,22 @@ def hapus_data():
     dihapus = ['Debit','Kredit','Utang']
     for i in dihapus:
         with open(f"Data {i}.csv",'w') as hapus:
-            hapus.write('Nama Transaksi,Kategori,Nominal')
-    with open('Data kategori.csv','w') as utang:
-        utang.write('Kategori')
+            hapus.write('Nama Transaksi,Kategori,Nominal\n')
     
 def hapus_pengguna():
     with open('login.csv','w') as login:
         login.write('')
+    with open('Data kategori.csv','w') as utang:
+        utang.write('Kategori\n')
+
+def banyaknya_csv(file_csv):
+    banyak = 0
+    with open(file_csv,'r') as hitung:
+        reader = csv.reader(hitung)
+        for a in reader:
+            banyak += 1
+    return banyak
+
 
 if __name__ == '__main__':
     Login_pengguna()
