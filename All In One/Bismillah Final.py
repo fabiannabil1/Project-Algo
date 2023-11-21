@@ -208,9 +208,11 @@ def Fitur_Pencatatan():
         Header()
         interface = (f"=-=-=-=-={data}=-=-=-=-=")
         print(f"{interface:^75}")
-        inputan = input('Masukkan Nama Transaksi\t\t:')
+        simpan_input =[0,1,2]
+        simpan_input[0] = input('Masukkan Nama Transaksi\t\t:')
         if kategori == 'pemasukan':
-                 inputan=[inputan,kategori,input('Masukkan Nominal Transaksi\t: Rp.')]
+                 simpan_input[1]=kategori
+                 simpan_input[2]=input('Masukkan Nominal Transaksi\t: Rp.')
         else:
             Kategori_transaksi()
             panjang_data = banyaknya_csv('Data kategori.csv')
@@ -218,13 +220,17 @@ def Fitur_Pencatatan():
             if 0 <= tipe  <= panjang_data:
                 df_kategori = pd.read_csv('Data kategori.csv')
                 tipe_transaksi = df_kategori.iloc[tipe,0]
-                inputan = [inputan,str(tipe_transaksi),input('Masukkan Nominal Transaksi\t: Rp.')]
+                simpan_input[1]=tipe_transaksi
+                simpan_input[2]=input('Masukkan Nominal Transaksi\t: Rp.')
             else:
                 Catat(data,kategori)
-    
-        with open(f"Data {data}.csv",'a') as catat:
-            data_data = csv.writer(catat, delimiter=',')
-            data_data.writerow(inputan)
+
+        simpan = {'Nama Transaksi' : simpan_input[0], 'Kategori' : simpan_input[1], 'Nominal':simpan_input[2] }
+        panjang_data = banyaknya_csv(f"Data {data}.csv")
+        baca_dbs = pd.read_csv(f"Data {data}.csv")
+        baca_dbs.loc[panjang_data] = simpan
+        baca_dbs.to_csv(f"Data {data}.csv", index= False)
+       
         print('Berhasil disimpan!')
         input('Enter untuk melanjutkan...')
         tambah_lagi = input('Tambah lagi? y/t:')
@@ -485,17 +491,13 @@ def hapus_data():
 def hapus_pengguna():
     with open('login.csv','w') as login:
         login.write('')
-    with open('Data kategori.csv','w') as utang:
-        utang.write('Kategori\n')
+    with open('Data kategori.csv','w') as hapus_kategori:
+        hapus_kategori.write('Kategori\n')
 
 def banyaknya_csv(file_csv):
-    banyak = 0
-    with open(file_csv,'r') as hitung:
-        reader = csv.reader(hitung)
-        for a in reader:
-            banyak += 1
-    return banyak
-
+    df = pd.read_csv(file_csv)
+    panjang = len(df)
+    return panjang
 
 if __name__ == '__main__':
     Login_pengguna()
