@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 import csv
-import pwinput
 
 def clear_console():
         os.system('cls')
@@ -38,7 +37,7 @@ def verifikasi_password(password):
 def Login_pengguna():
     def Register():
         def password():
-            pilihan_password = pwinput.pwinput('Buat Password\t\t:')
+            pilihan_password = input('Buat Password\t\t:')
             if verifikasi_password(pilihan_password):
                 regist[3] = pilihan_password
             else:
@@ -90,7 +89,7 @@ def Login_pengguna():
 
     def ganti_userpass():
         def password():
-            pilihan_password = pwinput.pwinput('Masukkan Password baru :')
+            pilihan_password = input('Masukkan Password baru :')
             if verifikasi_password(pilihan_password):
                 akun_baru[1] = pilihan_password
             else:
@@ -102,7 +101,7 @@ def Login_pengguna():
         Header()
         print('')
         check =[input('Masukkan Username Lama :'),
-                (pwinput.pwinput('Masukkan Password Lama :'))]
+                (input('Masukkan Password Lama :'))]
         with open('login.csv','r') as file:
             reader = csv.reader(file)
             for data_user in reader:
@@ -145,7 +144,7 @@ def Login_pengguna():
             pilihan_awal = (input('Ketikkan Pilihan Anda\t:'))
             match pilihan_awal:
                 case '1' :
-                    username_login = [input('Masukkan Username\t:'),pwinput.pwinput('Password \t\t:')]
+                    username_login = [input('Masukkan Username\t:'),input('Password \t\t:')]
                     login_user(username_login[0],username_login[1])
                 case '2' :
                     ganti_userpass()
@@ -168,7 +167,6 @@ def Menu_Awal():
                 Baca_Saldo()
             case '3' :
                 Edit_data()
-                pass
             case '4' :
                 profil_pengguna()
             case '5' :
@@ -432,7 +430,7 @@ def Edit_data():
         print('Pilih pengeditan yang akan dilakukan :')
         print(f"{'1. Hapus Baris'}\n{'2. Kembali'}")
         pilihan_edit = input('Masukkan Pilihan (Nomor) : ')
-        if pilihan_edit == '1' or pilihan_edit == '2':
+        if pilihan_edit in range(1,5):
             if pilihan_edit == '1':
                 print('Mode Hapus Baris')
                 pilihan_baris = int(input('Nomor baris yang akan dihapus : '))
@@ -512,19 +510,72 @@ def Edit_data():
     
     clear_console()
     Header()
-    print(f"{'Pilih pengeditan yang akan dilakukan'}\n{'1. Debit'}\n{'2. Kredit'}\n{'3. Utang'}\n{'4. Kembali'}")
+    print(f"{'Pilih pengeditan yang akan dilakukan'}\n{'1. Debit'}\n{'2. Kredit'}\n{'3. Utang'}\n{'4. Hapus Data'}\n{'5. Hapus akun beserta seluruh data'}\n{'6. Kembali'}")
     pilihan_edit_data = input('Ketikkan pilihan (Nomor) :')
-    if pilihan_edit_data == '1' or pilihan_edit_data == '2' or pilihan_edit_data == '3' or pilihan_edit_data ==  '4':
-        if pilihan_edit_data == '1':
+    if pilihan_edit_data == '1' or pilihan_edit_data == '2' or pilihan_edit_data == '3' or pilihan_edit_data ==  '4' or pilihan_edit_data ==  '5' or pilihan_edit_data ==  '6':
+        if pilihan_edit_data == '1':    
             edit_debit()
         elif pilihan_edit_data == '2':
             edit_kredit()
         elif pilihan_edit_data == '3':
             edit_utang()
+        elif pilihan_edit_data == '4':
+            print('Yakin Hapus Data?')
+            pilihan = input('Ketik [y] jika yakin/enter untuk batal :')
+            if pilihan == 'y' or 'Y':
+                input('Data Terhapus.. Enter untuk lanjut  ')
+                hapus_data()
+                Edit_data()
+            else:
+                print('Penghapusan dibatalkan')
+                input('Enter untuk melanjutkan....')
+                Edit_data()
+
+        elif pilihan_edit_data == '5':
+            pilihan = input('Yakin Hapus Data? (y/t)')
+            if pilihan == 'y' or 'Y' :
+                check =[input('Masukkan Username :'),
+                (input('Masukkan Password :'))]
+                if verifikasi_pass_dengan_dbs(check[0],check[1]):
+                    input("Data telah dihapus.. Sampai Jumpa :).. enter untuk melanjutkan")
+                    hapus_pengguna()
+                    hapus_data()
+                    Login_pengguna()
+                else:
+                    input('Verifikasi Gagal...')
+                    Edit_data()
+            else:
+                input('Penghapusan dibatalkan.. enter untuk melanjutkan')
+                Edit_data()
         else:
             Menu_Awal()
     else:
         Edit_data()
+
+def verifikasi_pass_dengan_dbs(username,password):
+     with open('login.csv','r') as file:
+            verifikasi = csv.reader(file)
+            for data in verifikasi:
+                if username == data[2] and password == data[3]:
+                    return True
+                else:
+                    return False
+
+def hapus_data():
+    with open('Data Debit.csv','w') as debit:
+        debit.write('Nama Transaksi,Kategori,Nominal')
+    with open('Data Kredit.csv','w') as kredit:
+        kredit.write('Nama Transaksi,Kategori,Nominal')
+    with open('Data Utang.csv','w') as utang:
+        utang.write('Nama Transaksi,Kategori,Nominal')
+    with open('Data kategori.csv','w') as utang:
+        utang.write('Kategori')
+    
+def hapus_pengguna():
+    with open('login.csv','w') as login:
+        login.write('')
+
+
 
 if __name__ == '__main__':
     Login_pengguna()
