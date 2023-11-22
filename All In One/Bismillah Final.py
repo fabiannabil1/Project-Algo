@@ -166,8 +166,10 @@ def Menu_Awal():
             case '3' :
                 Edit_data()
             case '4' :
+                lihat_dbs_per_halaman()
+            case '5':
                 profil_pengguna()
-            case '5' :
+            case '6' :
                 Login_pengguna()
             case _ :
                 Menu_Awal()
@@ -412,17 +414,23 @@ def Edit_data():
         if pilihan_edit in ('1','2'):
             if pilihan_edit == '1':
                 print('Mode Hapus Baris')
-                pilihan_baris = int(input('Nomor baris yang akan dihapus : '))
-                if pilihan_baris > (len(datas.index)-1):
-                    print('Pilihan melebihi banyak baris....')
-                    input('Enter untuk mengulang..')
-                    data(data)
+                pilihan_baris = input('Nomor baris yang akan dihapus : ')
+                if pilihan_baris in '1234567890':
+                    pilihan_baris = int(pilihan_baris)
+                    if pilihan_baris > (len(datas.index)-1):
+                        print('Pilihan melebihi banyak baris....')
+                        input('Enter untuk mengulang..')
+                        data(data)
+                    else:
+                        datas = datas.drop(pilihan_baris)
+                        datas.index = range(0,len(datas))
+                        datas.to_csv(file,index= False)
+                        print('Data Terupdate')
+                        input('Enter untuk melanjutkan....')
+                        data_hapus(data)
                 else:
-                    datas = datas.drop(pilihan_baris)
-                    datas.index = range(0,len(datas))
-                    datas.to_csv(file,index= False)
-                    print('Data Terupdate')
-                    input('Enter untuk melanjutkan....')
+                    print('Baris tidak ditemukan atau kesalahan input')
+                    input('Enter untuk mengulang')
                     data_hapus(data)
             else:
                 Edit_data()
@@ -502,6 +510,65 @@ def banyaknya_csv(file_csv):
     df = pd.read_csv(file_csv)
     panjang = len(df)
     return panjang
+
+def lihat_dbs_per_halaman():
+    def lihat_halaman(nama_dbs):
+        def lihat_banyak_halaman(file):
+            df = pd.read_csv(file)
+            banyak_halaman = len(df)%25
+            if banyak_halaman == 0:
+                banyak_halaman = len(df)/25
+            else:
+                banyak_halaman = int(len(df)/25+1)  
+            return banyak_halaman
+
+        def tampilkan_per_halaman(halaman_ke):
+            df = pd.read_csv(nama_dbs)
+            batas_bawah = 0
+            batas_atas = 25
+            for a in range(0,halaman_ke-1):
+                batas_atas += 25
+                batas_bawah += 25
+            list_halaman = df.iloc[batas_bawah:batas_atas]
+            return list_halaman
+
+        def pilihan_halaman(n=1,pesan=""):
+            clear_console()
+            Header()
+            print(tampilkan_per_halaman(n))
+            print(pesan)
+            pilihan = input('Ketikkan halaman yang ingin dituju [t] untuk kembali:')
+            if pilihan == "t":
+                lihat_dbs_per_halaman()
+            else:
+                pilihan = int(pilihan)
+                if pilihan <= lihat_banyak_halaman(nama_dbs):
+                    n = pilihan
+                    pilihan_halaman(n)
+                else:
+                    pilihan_halaman(n,"Pilihan anda melebihi jumlah data....")
+                    pilihan_halaman()
+        pilihan_halaman()
+
+    clear_console()
+    Header()
+    
+    print("Tentukan Riwayat Dituju\n1. Debit\n2. Kredit\n3. Utang\n4. Kembali")
+    pilihan = input("ketikkan pilihan anda :")
+    if pilihan in '1234':
+        if pilihan == '1' :
+            lihat_halaman('Data Debit.csv')
+        elif pilihan == '2' :
+            lihat_halaman('Data Kredit.csv')
+        elif pilihan == '3':
+            lihat_halaman('Data Utang.csv')
+        else:
+            Menu_Awal()
+    
+    else:
+        print('pilihan diluar rentang atau salah..')
+        input('enter untuk melanjutkan')
+        lihat_dbs_per_halaman()
 
 if __name__ == '__main__':
     Login_pengguna()
