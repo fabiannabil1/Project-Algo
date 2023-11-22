@@ -56,7 +56,7 @@ def Login_pengguna():
             Register()
         elif regist == 't':
             clear_console()
-            exit
+            exit()
         else:
             regist =[regist,input('Masukkan Pekerjaan Anda\t:'),
                     input('Buat Username\t\t:'),'password']
@@ -147,8 +147,8 @@ def Login_pengguna():
                 case '2' :
                     ganti_userpass()
                 case '3' :
-                    exit
                     clear_console()
+                    exit()
                 case _ :
                     Login_pengguna()
                     
@@ -374,18 +374,18 @@ def Kategori_Default():
 def Baca_Saldo():
 
     df_Debit = pd.read_csv(f"Data Debit.csv")
-    panjang_index = len(df_Debit.index)
-    total_debit = df_Debit.iloc[0:panjang_index,2]
+    panjang_index_debit = len(df_Debit.index)
+    total_debit = df_Debit.iloc[0:panjang_index_debit,2]
     total_debit = total_debit.sum()
        
     df_Kredit = pd.read_csv('Data Kredit.csv')
-    panjang_index = len(df_Kredit.index)
-    total_kredit = df_Kredit.iloc[0:panjang_index,2]
+    panjang_index_kredit = len(df_Kredit.index)
+    total_kredit = df_Kredit.iloc[0:panjang_index_kredit,2]
     total_kredit = total_kredit.sum()
         
     df_Utang = pd.read_csv('Data Utang.csv')
-    panjang_index = len(df_Utang.index)
-    total_utang = df_Utang.iloc[0:panjang_index,2]
+    panjang_index_utang = len(df_Utang.index)
+    total_utang = df_Utang.iloc[0:panjang_index_utang,2]
     total_utang = total_utang.sum()
        
     
@@ -512,23 +512,24 @@ def banyaknya_csv(file_csv):
     return panjang
 
 def lihat_dbs_per_halaman():
+    jumlah_data_per_page = 5
     def lihat_halaman(nama_dbs):
         def lihat_banyak_halaman(file):
             df = pd.read_csv(file)
-            banyak_halaman = len(df)%25
+            banyak_halaman = len(df)%jumlah_data_per_page
             if banyak_halaman == 0:
-                banyak_halaman = len(df)/25
+                banyak_halaman = len(df)/jumlah_data_per_page
             else:
-                banyak_halaman = int(len(df)/25+1)  
+                banyak_halaman = int(len(df)/jumlah_data_per_page+1)  
             return banyak_halaman
 
         def tampilkan_per_halaman(halaman_ke):
             df = pd.read_csv(nama_dbs)
             batas_bawah = 0
-            batas_atas = 25
+            batas_atas = jumlah_data_per_page
             for a in range(0,halaman_ke-1):
-                batas_atas += 25
-                batas_bawah += 25
+                batas_atas += jumlah_data_per_page
+                batas_bawah += jumlah_data_per_page
             list_halaman = df.iloc[batas_bawah:batas_atas]
             return list_halaman
 
@@ -538,16 +539,21 @@ def lihat_dbs_per_halaman():
             print(tampilkan_per_halaman(n))
             print(pesan)
             pilihan = input('Ketikkan halaman yang ingin dituju [t] untuk kembali:')
-            if pilihan == "t":
-                lihat_dbs_per_halaman()
+            if len(pilihan) < 1:
+                pilihan_halaman(n,"Pilihan anda melebihi jumlah data....")
+                pilihan_halaman()
             else:
-                pilihan = int(pilihan)
-                if pilihan <= lihat_banyak_halaman(nama_dbs):
-                    n = pilihan
-                    pilihan_halaman(n)
+                if pilihan == "t":
+                    lihat_dbs_per_halaman()
+                
                 else:
-                    pilihan_halaman(n,"Pilihan anda melebihi jumlah data....")
-                    pilihan_halaman()
+                    pilihan = int(pilihan)
+                    if pilihan <= lihat_banyak_halaman(nama_dbs):
+                        n = pilihan
+                        pilihan_halaman(n)
+                    else:
+                        pilihan_halaman(n,"Pilihan anda melebihi jumlah data....")
+                        pilihan_halaman()
         pilihan_halaman()
 
     clear_console()
