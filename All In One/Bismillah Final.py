@@ -443,31 +443,35 @@ def Edit_data():
         elif pilihan_edit_data == '4':
             print('Yakin Hapus Data?')
             pilihan = input('Ketik [y] jika yakin/enter untuk batal :')
-            if pilihan == 'y' or 'Y':
-                input('Data Terhapus.. Enter untuk lanjut  ')
-                hapus_data()
-                Edit_data()
-            else:
-                print('Penghapusan dibatalkan')
-                input('Enter untuk melanjutkan....')
-                Edit_data()
+            match pilihan:
+                case 'y':
+                    input('Data Terhapus.. Enter untuk lanjut  ')
+                    hapus_data()
+                    Edit_data()
+                case 'Y':
+                    input('Data Terhapus.. Enter untuk lanjut  ')
+                    hapus_data()
+                    Edit_data()
+                case _ :
+                    print('Penghapusan dibatalkan')
+                    input('Enter untuk melanjutkan....')
+                    Edit_data()
 
         elif pilihan_edit_data == '5':
-            pilihan = input('Yakin Hapus Data? (y/t)')
-            if pilihan == 'y' or 'Y' :
-                check =[input('Masukkan Username :'),
-                (input('Masukkan Password :'))]
-                if verifikasi_pass_dengan_dbs(check[0],check[1]):
-                    input("Data telah dihapus.. Sampai Jumpa :).. enter untuk melanjutkan")
-                    hapus_pengguna()
+            match pilihan:
+                case 'y':
+                    input('Data Terhapus.. Enter untuk lanjut  ')
                     hapus_data()
-                    Login_pengguna()
-                else:
-                    input('Verifikasi Gagal...')
                     Edit_data()
-            else:
-                input('Penghapusan dibatalkan.. enter untuk melanjutkan')
-                Edit_data()
+                case 'Y':
+                    input('Data Terhapus.. Enter untuk lanjut  ')
+                    hapus_data()
+                    hapus_pengguna()
+                    Edit_data()
+                case _ :
+                    print('Penghapusan dibatalkan')
+                    input('Enter untuk melanjutkan....')
+                    Edit_data()
         else:
             Menu_Awal()
     else:
