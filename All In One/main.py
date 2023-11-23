@@ -466,7 +466,7 @@ def Edit_data():
                     Edit_data()
 
         elif pilihan_edit_data == '5':
-            match pilihan:
+            match pilihan_edit_data:
                 case 'y':
                     input('Data Terhapus.. Enter untuk lanjut  ')
                     hapus_data()
