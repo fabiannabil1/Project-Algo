@@ -466,16 +466,24 @@ def Edit_data():
                     Edit_data()
 
         elif pilihan_edit_data == '5':
-            match pilihan_edit_data:
+            pilihan = input('Yakin Hapus Data?v [y/t])').lower()
+            match pilihan:
                 case 'y':
-                    input('Data Terhapus.. Enter untuk lanjut  ')
-                    hapus_data()
-                    Edit_data()
-                case 'Y':
-                    input('Data Terhapus.. Enter untuk lanjut  ')
-                    hapus_data()
-                    hapus_pengguna()
-                    Edit_data()
+                    cek_pas = [input('Masukkan Username : '),
+                                  input('Masukkan Password : ')]
+                    with open('login.csv','r') as file:
+                        verifikasi = csv.reader(file)
+                        for data in verifikasi:
+                            if cek_pas[0] == data[2] and cek_pas[1] == data[3]:
+                                input('Terima Kasih Telah Menggunakan Aplikasi Kami')
+                                hapus_data()
+                                hapus_pengguna()
+                                clear_console()
+                                exit()
+                            else:
+                                print('Penghapusan dibatalkan')
+                                input('Enter untuk melanjutkan....')
+                                Edit_data()
                 case _ :
                     print('Penghapusan dibatalkan')
                     input('Enter untuk melanjutkan....')
